@@ -6,7 +6,7 @@
 # 2 - Search Twitter for query = "ApacheSpark" (JSON - Tweets)
 # 3 - Parse Tweets (TweetId, CreatedAt, UserId, UserName, TweetText, TweetURL)
 #
-#
+
 import json
 import twitter
 import urlparse
