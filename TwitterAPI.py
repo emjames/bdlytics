@@ -99,8 +99,8 @@ class TwitterAPI(object):
         self.jsonSaver.save(statuses)
 
         # save to MongoDB
-        # for s in statuses:
-        #     self.mongoSaver.save(s)
+        for s in statuses:
+            self.mongoSaver.save(s)
 
     # ??
     def parseTweets(self, statuses):
