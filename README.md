@@ -1,7 +1,6 @@
 # Big Data Analytics
-=====================
-`keys["github"]["access_token"]`
-keys is a json file containing the API keys with this format:
+## Keys
+`keys["github"]["access_token"]` keys from a json file containing the API keys with this format:
 ```
 {
   "twitter" : {
@@ -12,6 +11,17 @@ keys is a json file containing the API keys with this format:
   "github" : {
     "access_token": "YOUR_TOKEN"
   }
+}
+```
+
+## Configs
+```
+{
+  "appName": "YOUR_APPNAME",
+  "logFolder" : "YOUR_LOGPATH",
+  "jsonPath": "YOUR_JSONPATH",
+  "db": "YOUR_DB",
+  "coll": "YOUR_COLLECTION"
 }
 ```
 

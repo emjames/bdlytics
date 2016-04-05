@@ -19,7 +19,7 @@ def runTwitter():
     tsearch = t.searchTwitter(q)
     tparsed = t.parseTweets(tsearch)
     pp(tparsed)
-
+    t.saveTweets(tsearch)
 
 def runGithub():
     # run GitHub API

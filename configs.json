@@ -1,0 +1,7 @@
+{
+  "appName": "twtr15027",
+  "logFolder": "/Users/james/spark/spark-1.5.2-bin-hadoop2.6/data",
+  "jsonPath": "/Users/james/spark/spark-1.5.2-bin-hadoop2.6/data",
+  "db": "twtr001_db",
+  "coll": "twtr001_coll"
+}
