@@ -5,6 +5,9 @@
 #
 
 import json
+import os
+
+import io
 
 
 class IO_json(object):
@@ -15,6 +18,13 @@ class IO_json(object):
         self.fPathName = fPath + '/' + fName + '.json'
 
     def save(self, data):
-        # w+ trunkates the file
-        with open(self.fPathName, 'w+') as outFile:
-            json.dump(data, outFile)
+        if os.path.isfile(self.fPathName):
+            # append existing file
+            mode = 'a'
+        else:
+            # create new file
+            mode = 'w'
+
+        with io.open(self.fPathName, mode, encoding='utf-8') as outFile:
+            outFile.write(unicode(json.dumps(data, ensure_ascii=False)))  # python 2.7
+            # outFile.write(json.dumps(data, ensure_ascii=False))  # python 3
