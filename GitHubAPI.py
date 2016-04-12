@@ -19,32 +19,36 @@ class GithubAPI(object):
         self.access_token = keys["github"]["access_token"]
         # self.g = Github(self.access_token, per_page=100)
         self.g = Github(self.access_token)
+        # test the token
         try:
             self.g.get_user().login
-        # test the token
         except GithubException as e:
             print e.status + e.message
 
-        self.user = self.g.get_user()
-        self.repo = None
+            # self.user = self.g.get_user()
+            # self.repo = None
         # self.repo = self.user.get_repo(repo)
 
     def getOneRepo(self, repo):
-        self.repo = self.user.get_repos(repo)
-        return self.repo
+        # self.repo = self.user.get_repos(repo)
+        # return self.repo
+        usr = self.g.get_user()
+        return usr.get_repo(repo)
+        # return self.g.get_repo(repo)
 
     # get the repos that belong to self.user
     def getRepos(self):
-        repos = [self.repo.name for self.repo in self.g.get_user(self.user.name).get_repos()]
+        # repos = [self.repo.name for self.repo in self.g.get_user(self.user.name).get_repos()]
+        repos = [repo.name for repo in self.g.get_user().get_repos()]
         return repos
 
     # get the languages from a repo
-    def getLangsFromRepo(self, repo=None):
+    def getLangsFromRepo(self, repo):
         # if the user passes in a repo
         # return the languages from that repo
-        # else return the languages from the self.repo
-        self.repo = self.user.get_repo(repo)
-        return [self.repo.get_languages()]
+        # self.repo = self.user.get_repo(repo)
+        # return [self.repo.get_languages()]
+        return self.g.get_repo(repo).get_languages()
 
     # get the public repos
     def getPubRepos(self, repoUrl):
@@ -54,9 +58,8 @@ class GithubAPI(object):
                  repo['url'])
                 for repo in resp]
 
-    # get issues from a repo
-    def getIssues(self):
-        q = 'label:bug+language:python&sort=created&order=asc'
-        # resp = requests.get(Github.search_repositories(query=q))
-        resp = self.g.search_issues(query=q)
-        pp(resp)
+    # get trending repositories by language
+    def getTrendByLang(self, lang):
+        q = "language:" + lang
+        trend = self.g.search_repositories(query=q, sort='stars', order='desc')
+        return trend
