@@ -29,15 +29,31 @@ git = GithubAPI()
 # Github API allows 30 req / 60s
 def checkLimit(name):
     logging.debug("Saved " + name)
-    limits = git.getRate()
+    rl = git.getRate()
+    limits = rl.raw_data
+    pp(limits)
+    rateRemaining = limits['rate']['remaining']  # amount of requests left
+    rateReset = limits['rate']['reset']  # amount of time to wait for reset
+    searchRemaining = limits['resources']['search']['remaining']  # amount of searches left
+    searchReset = limits['resources']['search']['reset']  # amount of time to wait for reset
     # low limits, sleep
-    if limits[0] < 30:
-        logging.debug("Time: " + limits[1])
-        dt1 = dt.datetime.fromtimestamp(limits[1])
+    if rateRemaining < 30:
+        # if its the rate, wait the rate reset
+        logging.debug("Time: " + rateReset)
+        dt1 = dt.datetime.fromtimestamp(rateReset)
         dt2 = dt.datetime.fromtimestamp(time.time())
         sleepTime = (dt1 - dt2).total_seconds()
         logging.debug("Sleeping for " + str(sleepTime) + " seconds")
         time.sleep(sleepTime)
+    # else wait for the search reset
+    elif searchRemaining < 5:
+        logging.debug("Time: " + searchReset)
+        dt1 = dt.datetime.fromtimestamp(searchReset)
+        dt2 = dt.datetime.fromtimestamp(time.time())
+        sleepTime = (dt1 - dt2).total_seconds()
+        logging.debug("Sleeping for " + str(sleepTime) + " seconds")
+        time.sleep(sleepTime)
+
 
 
 # main runner
@@ -52,6 +68,7 @@ def main():
         repoSaver.save(repo.raw_data)
         # log the save
         logging.debug("Repo begin: " + repo.name)
+        print "REPO: " + repo.name
         checkLimit(repo.name)
         # print "Repo saved: ", repo.name
         # save the languages in the repo
