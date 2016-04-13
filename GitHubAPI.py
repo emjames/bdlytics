@@ -63,3 +63,8 @@ class GithubAPI(object):
         q = "language:" + lang
         trend = self.g.search_repositories(query=q, sort='stars', order='desc')
         return trend
+
+    # get the rate limits
+    def getRate(self):
+        # return [self.g.rate_limiting, self.g.rate_limiting_resettime]
+        return self.g.get_rate_limit()
