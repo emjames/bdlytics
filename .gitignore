@@ -5,6 +5,8 @@ keys.json
 configs.json
 # python byte code
 *.pyc
+# log files
+*.log
 
 # ################ ###############
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm

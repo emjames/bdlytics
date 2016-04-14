@@ -17,9 +17,9 @@ with open('configs.json') as configs_file:
 
 appName = "pygithub"
 appFname = appName + date.today().isoformat()
-appLogFile = appFname + ".log"
+localT = time.localtime()
+appLogFile = appFname + str(localT[3]) + "h" + str(localT[4]) + "m" + ".log"
 logging.basicConfig(filename=appLogFile, level=logging.DEBUG)
-requests = 0
 
 # create a new API object
 git = GithubAPI()
@@ -28,10 +28,9 @@ git = GithubAPI()
 # helper to check the api's current limit and avoid exceeding
 # Github API allows 30 req / 60s
 def checkLimit(name):
-    logging.debug("Saved " + name)
+    logging.debug("DEBUG:jms:Saved " + name)
     rl = git.getRate()
     limits = rl.raw_data
-    pp(limits)
     rateRemaining = limits['rate']['remaining']  # amount of requests left
     rateReset = limits['rate']['reset']  # amount of time to wait for reset
     searchRemaining = limits['resources']['search']['remaining']  # amount of searches left
@@ -53,7 +52,6 @@ def checkLimit(name):
         sleepTime = (dt1 - dt2).total_seconds()
         logging.debug("Sleeping for " + str(sleepTime) + " seconds")
         time.sleep(sleepTime)
-
 
 
 # main runner
@@ -78,9 +76,9 @@ def main():
         repoSaver.save(repo.get_readme().raw_data)
         checkLimit("readme")
         # save the amount of stargazers
-        for sg in repo.get_stargazers():
-            repoSaver.save(sg.raw_data)
-        checkLimit("stargazers")
+        # for sg in repo.get_stargazers():
+        #     repoSaver.save(sg.raw_data)
+        # checkLimit("stargazers")
         # contributor list
         # repoSaver.savePP(repo.get_stats_contributors().raw_data)
         for statContrib in repo.get_stats_contributors():
@@ -122,7 +120,6 @@ def main():
             # loop through the files in the commits
             for f in commit.files:
                 # and store them
-                repoSaver.savePP("LOGR_FILE")
                 repoSaver.save(f.raw_data)
                 # log the save
                 print "File saved"
