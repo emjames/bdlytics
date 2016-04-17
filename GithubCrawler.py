@@ -21,7 +21,9 @@ localT = time.localtime()
 # create a log file stating the date and hour created
 appLogFile = appFname + str(localT[3]) + "h" + str(localT[4]) + "m" + ".log"
 logging.basicConfig(filename=appLogFile, level=logging.DEBUG)
-
+# check for previously crawled repos
+with open('crawledRepoList.json') as crawledRepoList:
+    savedCrawledRepos = json.load(crawledRepoList)
 # create a new API object
 git = GithubAPI()
 
@@ -94,6 +96,8 @@ def main():
             # TODO: add a persistence to repoList
             repoList.append(repo.name)
             print "REPO " + repo.name + " END"
+
+    configs_file.close()
 
 
 if __name__ == '__main__':
