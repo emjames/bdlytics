@@ -27,7 +27,7 @@ git = GithubAPI()
 
 
 # helper to check the api's current limit and avoid exceeding
-# Github API allows 30 req / 60s
+# Github search API allows 30 req / 60s
 def checkLimit(name):
     logging.debug("DEBUG:jms:Saved " + name)
     rl = git.getRate()
