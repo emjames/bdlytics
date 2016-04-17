@@ -1,9 +1,9 @@
 # Dev: 3mjms
 # Single file to import separate APIs
 # GitHub API
-from GitHubAPI import GithubAPI
+from utils.GitHubAPI import GithubAPI
 # Twitter API
-from TwitterAPI import TwitterAPI
+from utils.TwitterAPI import TwitterAPI
 from pprint import pprint as pp
 
 

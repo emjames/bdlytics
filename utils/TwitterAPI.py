@@ -10,8 +10,7 @@
 import json
 import logging
 # import IO_json as IO_json
-import IO_json
-import IO_mongo
+from utils import IO_json, IO_mongo
 
 import sys
 

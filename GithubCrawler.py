@@ -2,14 +2,14 @@
 # Crawl github to find issues in different repositories
 #
 # GitHub API
-from GitHubAPI import GithubAPI
-from IO_json import IO_json
-from datetime import date
 import datetime as dt
-import time
-import logging
 import json
-from pprint import pprint as pp
+import logging
+import time
+from datetime import date
+
+from utils.GitHubAPI import GithubAPI
+from utils.IO_json import IO_json
 
 # setup configs
 with open('configs.json') as configs_file:
@@ -57,7 +57,7 @@ def checkLimit(name):
 
 # main runner
 def main():
-    # get repositories in trend
+    # query for language and repositories in trend
     language = "python"
     # a list of previously crawled repos
     repoList = ["httpie", "thefuck", "awesome-python", "flask", "requests", "django", "youtube-dl", "ansible",
