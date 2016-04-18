@@ -7,6 +7,7 @@ import json
 import logging
 import time
 from datetime import date
+import io
 
 from utils.GitHubAPI import GithubAPI
 from utils.IO_json import IO_json
@@ -21,9 +22,6 @@ localT = time.localtime()
 # create a log file stating the date and hour created
 appLogFile = appFname + str(localT[3]) + "h" + str(localT[4]) + "m" + ".log"
 logging.basicConfig(filename=appLogFile, level=logging.DEBUG)
-# check for previously crawled repos
-with open('crawledRepoList.json') as crawledRepoList:
-    savedCrawledRepos = json.load(crawledRepoList)
 # create a new API object
 git = GithubAPI()
 
@@ -31,7 +29,7 @@ git = GithubAPI()
 # helper to check the api's current limit and avoid exceeding
 # Github search API allows 30 req / 60s
 def checkLimit(name):
-    logging.debug("DEBUG:jms:Saved " + name)
+    logging.debug("jms:Saved " + name)
     rl = git.getRate()
     limits = rl.raw_data
     rateRemaining = limits['rate']['remaining']  # amount of requests left
@@ -57,14 +55,40 @@ def checkLimit(name):
         time.sleep(sleepTime)
 
 
+# method of checking if there is a saved list of previously crawled repositories
+# returns the saved list of crawled repos
+def getList(fName):
+    try:
+        with open(fName) as crawledRepos_file:
+            crawledRepos = json.load(crawledRepos_file)
+            logging.debug("jms:File crawled repo exists")
+            crawledRepos_file.close()
+            return crawledRepos
+    except IOError:
+        # if there isn't a list file, create one with an empty list
+        logging.debug("jms:File crawled repo doesn't exists")
+        saveList(fName, [])
+
+
+# method of saving previously crawled repositories
+# creates a new file (existing file with same name will be erased)
+# at fPathName with data
+def saveList(fPathName, data):
+    mode = 'w'
+    with io.open(fPathName, mode, encoding='utf-8') as outFile:
+        outFile.write(unicode(json.dumps(data, ensure_ascii=False)))  # python 2.7
+        # outFile.write(json.dumps(data, ensure_ascii=False))  # python 3
+
+
 # main runner
 def main():
     # query for language and repositories in trend
     language = "python"
     # a list of previously crawled repos
-    repoList = ["httpie", "thefuck", "awesome-python", "flask", "requests", "django", "youtube-dl", "ansible",
-                "letsencrypt", "scrapy", "shadowsocks", "awesome-machine-learning",
-                "big-list-of-naughty-strings", "tornado"]
+    # repoList = ["httpie", "thefuck", "awesome-python", "flask", "requests", "django", "youtube-dl", "ansible",
+    #             "letsencrypt", "scrapy", "shadowsocks", "awesome-machine-learning",
+    #             "big-list-of-naughty-strings", "tornado"]
+    repoList = getList("list")
     for repo in git.getTrendByLang(language):
         # check if the repo has already been crawled
         if repo.name in repoList:
@@ -97,6 +121,8 @@ def main():
             repoList.append(repo.name)
             print "REPO " + repo.name + " END"
 
+    # save the crawled repos
+    saveList("list", repoList)
     configs_file.close()
 
 
