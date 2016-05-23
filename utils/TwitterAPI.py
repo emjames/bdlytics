@@ -91,6 +91,10 @@ class TwitterAPI(object):
                 break
         return statuses
 
+    # returns a stream of the public streams availabe on Twitter
+    def stream(self):
+        return twitter.TwitterStream(auth=self.auth)
+
     def saveTweets(self, statuses):
         # saving to JSON file
         print 'Saving to json'
@@ -98,8 +102,8 @@ class TwitterAPI(object):
         self.jsonSaver.save(statuses)
 
         # save to MongoDB
-        for s in statuses:
-            self.mongoSaver.save(s)
+        # for s in statuses:
+        #     self.mongoSaver.save(s)
 
     # ??
     def parseTweets(self, statuses):

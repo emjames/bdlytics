@@ -27,6 +27,8 @@ class IO_json(object):
 
         with io.open(self.fPathName, mode, encoding='utf-8') as outFile:
             outFile.write(unicode(json.dumps(data, ensure_ascii=False)))  # python 2.7
+            # new line to keep order
+            outFile.write(u'\u000A')
             # outFile.write(json.dumps(data, ensure_ascii=False))  # python 3
             outFile.close()
 
