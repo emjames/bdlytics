@@ -78,6 +78,7 @@ def saveList(fPathName, data):
     with io.open(fPathName, mode, encoding='utf-8') as outFile:
         outFile.write(unicode(json.dumps(data, ensure_ascii=False)))  # python 2.7
         # outFile.write(json.dumps(data, ensure_ascii=False))  # python 3
+        outFile.close()
 
 
 # main runner
@@ -92,37 +93,63 @@ def main():
     for repo in git.getTrendByLang(language):
         # check if the repo has already been crawled
         if repo.name in repoList:
+            # if it has, skip to the next one
             continue
         else:
-            # crate a json file for each repo
+            # reset the data
+            # repoData = {}
+            # create a json file for each repo
             repoSaver = IO_json(configs["jsonPath"], repo.name)
             # store the raw_data from the repo class
             # pp(repo.raw_data)
             repoSaver.save(repo.raw_data)
+            # repoData['repo'] = json.dumps(repo.raw_data)
+            print "DATA"
+            # print repoData
             # log the save
             logging.debug("Repo begin: " + repo.name)
             print "REPO: " + repo.name
-            checkLimit(repo.name)
+            # checkLimit(repo.name)
             print "Getting languages "
             repoSaver.save(repo.get_languages())
-            checkLimit("languages")
+            # repoData['languages'] = json.dumps(repo.get_languages())
+            # repoData = json.dumps(repo.get_languages())
+            print "LANGS"
+            # print repoData
+
+            # checkLimit("languages")
             print "Getting issues "
+            # create empty list to populate all of the issues
+            # then add them to repoData
+            # tempList = []
             for issue in repo.get_issues():
                 repoSaver.save(issue.raw_data)
+                print "ISSUE:", json.dumps(issue.raw_data)
+                # tempList.append(json.dumps(issue.raw_data))
+            # repoData['issues'] = tempList
             checkLimit("repo issues")
+
+            # clear the tempList for storing data in list
+            # tempList = []
             # get all the comments in the issue
             print "Getting issues comments"
             for commentsIssue in repo.get_issues_comments():
                 repoSaver.save(commentsIssue.raw_data)
+                # repoData = json.dumps(commentsIssue.raw_data)
+                print "COMMENT:", json.dumps(commentsIssue.raw_data)
+                # tempList.append(json.dumps(commentsIssue.raw_data))
+            # repoData['issues_comments'] = tempList
             checkLimit("repo issues comments")
-            checkLimit("Repo end: " + repo.name)
+
             # add the repo to the parsed list
-            # TODO: add a persistence to repoList
             repoList.append(repo.name)
+            # repoSaver.save(repoData)
+            # save the crawled repos
+            saveList("list", repoList)
+            debugmsg = "jms:repo", repo.name, "end"
+            logging.debug(debugmsg)
             print "REPO " + repo.name + " END"
 
-    # save the crawled repos
-    saveList("list", repoList)
     configs_file.close()
 
 

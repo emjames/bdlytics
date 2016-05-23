@@ -7,6 +7,8 @@ configs.json
 *.pyc
 # log files
 *.log
+# list of previously crawled repos
+list
 
 # ################ ###############
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm

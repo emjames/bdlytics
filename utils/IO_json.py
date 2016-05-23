@@ -28,6 +28,7 @@ class IO_json(object):
         with io.open(self.fPathName, mode, encoding='utf-8') as outFile:
             outFile.write(unicode(json.dumps(data, ensure_ascii=False)))  # python 2.7
             # outFile.write(json.dumps(data, ensure_ascii=False))  # python 3
+            outFile.close()
 
     def savePP(self, data):
         if os.path.isfile(self.fPathName):
